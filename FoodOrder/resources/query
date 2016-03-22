@@ -1,0 +1,1 @@
+select fo.date,emp.name,emp.department,f.value,f.singlePrice,fo.totalPrice from levins_food_order fo, levins_emploees emp, levins_order o, levins_food f where emp.id=fo.employeeID and o.order_id=fo.id and f.id=o.food_id
