@@ -11,11 +11,8 @@ import javax.swing.JLabel;
 import javax.swing.JSeparator;
 
 import com.levins.food.menu.jpa.FoodManage;
-import com.levins.food.menu.jpa.FoodMenuUnit;
 
 import java.awt.Panel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 public class ControlPanelMenu extends JFrame {
@@ -23,6 +20,7 @@ public class ControlPanelMenu extends JFrame {
 	FoodManage manage;
 	JComboBox comboBoxDepartment;
 	JComboBox comboBoxEmployee;
+	String selectedDepartment;
 
 	public ControlPanelMenu() {
 		manage = new FoodManage();
@@ -85,16 +83,23 @@ public class ControlPanelMenu extends JFrame {
 		gbc_panel.insets = new Insets(0, 0, 5, 5);
 		gbc_panel.gridx = 0;
 		gbc_panel.gridy = 2;
+
 		// TODO
 		List<String> departmentList = manage.getAllDepartment();
-		comboBoxDepartment = createDropDown(panelDepartment, departmentList);
+		comboBoxDepartment = createDropDown(departmentList);
+
 		ItemChangeListener aListener = new ItemChangeListener();
 		aListener.addBox(comboBoxEmployee);
+		selectedDepartment = (String) comboBoxDepartment.getSelectedItem();
+
+		List<String> employeeList = manage.getAllEmployees(selectedDepartment);
+		comboBoxEmployee = createDropDown(employeeList);
+
+		aListener.addPrimaryBox(comboBoxDepartment);
+		aListener.addListCoice(selectedDepartment);
+		aListener.addBox(comboBoxEmployee);
 		comboBoxDepartment.addItemListener(aListener);
-
-		String selectedDepartment = (String) comboBoxDepartment
-				.getSelectedItem();
-
+		panelDepartment.add(comboBoxDepartment);
 		getContentPane().add(panelDepartment, gbc_panel);
 
 		Panel panelEmployee = new Panel();
@@ -103,9 +108,7 @@ public class ControlPanelMenu extends JFrame {
 		gbc_panel_1.gridx = 1;
 		gbc_panel_1.gridy = 2;
 
-		List<String> employeeList = manage.getAllEmployees(selectedDepartment);
-		comboBoxEmployee = createDropDown(panelEmployee, employeeList);
-
+		panelEmployee.add(comboBoxEmployee);
 		getContentPane().add(panelEmployee, gbc_panel_1);
 
 		JSeparator separator = new JSeparator();
@@ -125,10 +128,9 @@ public class ControlPanelMenu extends JFrame {
 	 * @return selected choice
 	 */
 	@SuppressWarnings("unchecked")
-	private JComboBox createDropDown(Panel panel, List<String> listWithRecord) {
+	private JComboBox createDropDown(List<String> listWithRecord) {
 		Object[] bookTitles = listWithRecord.toArray();
 		JComboBox<String> bookList = new JComboBox(bookTitles);
-		panel.add(bookList);
 		// String selectedBook = (String) bookList.getSelectedItem();
 		return bookList;
 	}
