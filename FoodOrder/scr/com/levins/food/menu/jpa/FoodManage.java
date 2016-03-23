@@ -20,14 +20,6 @@ public class FoodManage {
 		this.connection = DataBaseConnection.getInstance();
 	}
 
-	// "dd_MM_yyyy" "dd_MM_yyyy':'HH:mm:"
-	public static Date createdDate(String format) {
-		@SuppressWarnings("unused")
-		DateFormat df = new SimpleDateFormat(format);
-		Date today = Calendar.getInstance().getTime();
-		return today;
-	}
-
 	public boolean removeEmployee(String employeeName, String employeeDepratment) {
 		EntityManager entityManager = connection.getEntityManager(UNIT_NAME);
 		if (employeeExists(employeeName, employeeDepratment)) {
@@ -89,7 +81,8 @@ public class FoodManage {
 
 	public List<String> getAllEmployees(String employeeDepratment) {
 		EntityManager entityManager = connection.getEntityManager(UNIT_NAME);
-		Query query = entityManager.createQuery("select e.name FROM levins_employees e where e.department like (:arg1)");
+		Query query = entityManager
+				.createQuery("select e.name FROM levins_employees e where e.department like (:arg1)");
 		query.setParameter("arg1", employeeDepratment);
 
 		@SuppressWarnings("unchecked")
@@ -99,11 +92,32 @@ public class FoodManage {
 
 	public List<String> getAllDepartment() {
 		EntityManager entityManager = connection.getEntityManager(UNIT_NAME);
-		Query query = entityManager.createQuery("select distinct e.department FROM levins_employees e");
+		Query query = entityManager
+				.createQuery("select distinct e.department FROM levins_employees e");
 
 		@SuppressWarnings("unchecked")
 		List<String> resultList = query.getResultList();
 		return resultList;
+	}
+
+	public List<String> getAllFodd(Date date) {
+		EntityManager entityManager = connection.getEntityManager(UNIT_NAME);
+		String dataValue = createdDate(date);
+		String string = String.format("select e FROM levins_food e where e.date like '%s%s'",dataValue,"%");
+		Query query = entityManager
+				.createQuery(string);
+//		query.setParameter("arg1", dataValue);
+
+		@SuppressWarnings("unchecked")
+		List<String> resultList = query.getResultList();
+		return resultList;
+	}
+
+	private String createdDate(Date date) {
+		String format = "yyyy-MM-dd";
+		DateFormat df = new SimpleDateFormat(format);
+		String reportDate = df.format(date);
+		return reportDate;
 	}
 
 	/**

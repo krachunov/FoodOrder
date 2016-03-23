@@ -2,7 +2,6 @@ package com.levins.food.menu.jpa;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +11,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import com.levins.food.menu.ui.ControlPanelMenu;
+import com.levins.food.menu.ui.OrderMenu;
 
 public class Demo {
 
@@ -33,16 +32,15 @@ public class Demo {
 	}
 
 	// "dd_MM_yyyy" "dd_MM_yyyy':'HH:mm:"
+	@SuppressWarnings("unused")
 	public static Date createdDate(String format) {
 		DateFormat df = new SimpleDateFormat(format);
 		Date today = Calendar.getInstance().getTime();
 		String reportDate = df.format(today);
-		// return reportDate;
 		return today;
 	}
 
 	public static void main(String[] args) {
-		Date date = createdDate("dd_MM_yyyy':'HH:mm:");
 
 		// Double totalAmount = 0d;
 		// for (Food food : listFood) {
@@ -56,8 +54,13 @@ public class Demo {
 		// FoodManage manager = new FoodManage();
 		// System.out.println(manager.getAllDepartment().size());
 
-		ControlPanelMenu menu = new ControlPanelMenu();
+		OrderMenu menu = new OrderMenu();
 		menu.setVisible(true);
+		
+		
+//		Date createdDate = createdDate("yyyy-MM-dd");
+//		FoodManage manage = new FoodManage();
+//		System.out.println(manage.getAllFodd(createdDate).size());
 
 	}
 }
