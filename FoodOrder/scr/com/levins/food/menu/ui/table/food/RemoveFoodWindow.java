@@ -88,7 +88,7 @@ public class RemoveFoodWindow extends JFrame {
 						: priceTextField.getText().trim();
 
 				FoodManage action = new FoodManage();
-				List<Food> findFood = action.findFood(searchName);
+				List<Food> findFood = action.getFoodByName(searchName);
 				for (Food food : findFood) {
 					resultFromDataBase.add(food.toString());
 				}

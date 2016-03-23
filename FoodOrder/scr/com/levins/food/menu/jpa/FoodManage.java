@@ -41,7 +41,7 @@ public class FoodManage {
 	public boolean removeFood(String food) {
 		EntityManager entityManager = connection.getEntityManager(UNIT_NAME);
 		if (foodExists(food)) {
-			List<Food> resultList = findFood(food);
+			List<Food> resultList = getFoodByName(food);
 			for (Food currentFood : resultList) {
 
 				entityManager.getTransaction().begin();
@@ -55,7 +55,13 @@ public class FoodManage {
 		}
 	}
 
-	public List<Food> findFood(String foodName) {
+	/**
+	 * Get list with all food with this name
+	 * 
+	 * @param foodName
+	 * @return
+	 */
+	public List<Food> getFoodByName(String foodName) {
 		EntityManager entityManager = connection.getEntityManager(UNIT_NAME);
 		Query query = entityManager
 				.createQuery("select e FROM levins_food e where e.foodName like (:arg1)");
@@ -63,6 +69,47 @@ public class FoodManage {
 
 		@SuppressWarnings("unchecked")
 		List<Food> resultList = query.getResultList();
+		return resultList;
+	}
+
+	public Double getPrice(String foodName, Date date) {
+		String dataValue = createdDate(date);
+		EntityManager entityManager = connection.getEntityManager(UNIT_NAME);
+		String string = String.format("select e.price FROM levins_food e where e.foodName like (:arg1) and e.date like '%s%s'",dataValue, "%");
+		Query query = entityManager.createQuery(string);
+		query.setParameter("arg1", foodName);
+
+		@SuppressWarnings("unchecked")
+		Double result = (Double) query.getSingleResult();
+		return result;
+	}
+
+	/**
+	 * Get Only one food from current day and current name
+	 * 
+	 * @param foodName
+	 * @return
+	 */
+	public List<Food> getFoodByDate(String foodName) {
+		EntityManager entityManager = connection.getEntityManager(UNIT_NAME);
+		Query query = entityManager
+				.createQuery("select e FROM levins_food e where e.foodName like (:arg1)");
+		query.setParameter("arg1", foodName);
+
+		@SuppressWarnings("unchecked")
+		List<Food> resultList = query.getResultList();
+		return resultList;
+	}
+
+	public List<String> getAllFoodByDate(Date date) {
+		EntityManager entityManager = connection.getEntityManager(UNIT_NAME);
+		String dataValue = createdDate(date);
+		String string = String
+				.format("select e.foodName FROM levins_food e where e.date like '%s%s'",
+						dataValue, "%");
+		Query query = entityManager.createQuery(string);
+		@SuppressWarnings("unchecked")
+		List<String> resultList = query.getResultList();
 		return resultList;
 	}
 
@@ -100,24 +147,11 @@ public class FoodManage {
 		return resultList;
 	}
 
-	public List<String> getAllFodd(Date date) {
-		EntityManager entityManager = connection.getEntityManager(UNIT_NAME);
-		String dataValue = createdDate(date);
-		String string = String.format("select e FROM levins_food e where e.date like '%s%s'",dataValue,"%");
-		Query query = entityManager
-				.createQuery(string);
-//		query.setParameter("arg1", dataValue);
-
-		@SuppressWarnings("unchecked")
-		List<String> resultList = query.getResultList();
-		return resultList;
-	}
-
 	private String createdDate(Date date) {
 		String format = "yyyy-MM-dd";
 		DateFormat df = new SimpleDateFormat(format);
 		String reportDate = df.format(date);
-		return reportDate;
+		return reportDate + "%";
 	}
 
 	/**

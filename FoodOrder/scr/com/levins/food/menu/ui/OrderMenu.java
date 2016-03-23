@@ -9,11 +9,13 @@ import java.awt.Insets;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
+import javax.swing.JTextArea;
 
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
+import com.levins.food.menu.jpa.Food;
 import com.levins.food.menu.jpa.FoodManage;
 
 import java.awt.Panel;
@@ -26,9 +28,11 @@ import java.util.Properties;
 
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.transaction.Transactional.TxType;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 @SuppressWarnings("rawtypes")
 public class OrderMenu extends JFrame {
@@ -40,13 +44,14 @@ public class OrderMenu extends JFrame {
 	JDatePickerImpl datePicker;
 	String selectedDepartment;
 	private JTextField textFieldQuantity;
-	private JTextField textFieldPrice;
+	private JTextArea textFieldPrice;
 	private List<String> foodList;
 
 	@SuppressWarnings("unchecked")
 	public OrderMenu() {
 		manage = new FoodManage();
 		setTitle("Food Order");
+		setSize(800, 300);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 0, 0, 0, 0, 85, 0, 0, 0, 0 };
 		gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0 };
@@ -157,9 +162,9 @@ public class OrderMenu extends JFrame {
 		datePicker.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Date date = (Date) datePicker.getModel().getValue();
-				foodList = manage.getAllFodd(date);
-//				comboBoxFood = new JComboBox(foodList.toArray());
-				comboBoxFood.setModel(new JComboBox<>(foodList.toArray()).getModel());
+				foodList = manage.getAllFoodByDate(date);
+				comboBoxFood.setModel(new JComboBox<>(foodList.toArray())
+						.getModel());
 			}
 		});
 
@@ -183,6 +188,19 @@ public class OrderMenu extends JFrame {
 		getContentPane().add(panelFood, gbc_panelFood);
 
 		comboBoxFood = new JComboBox(new Object[] {});
+		comboBoxFood.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+				 textFieldPrice.setText(null);
+				String selectedItem = (String) comboBoxFood.getModel()
+						.getSelectedItem();
+
+				Date date = (Date) datePicker.getModel().getValue();
+				FoodManage manage = new FoodManage();
+				Double foodPrice = manage.getPrice(selectedItem, date);
+				textFieldPrice.append(String.valueOf(foodPrice));
+			}
+		});
 
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
 		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
@@ -190,14 +208,14 @@ public class OrderMenu extends JFrame {
 		gbc_comboBox.gridy = 2;
 		getContentPane().add(comboBoxFood, gbc_comboBox);
 
-		textFieldPrice = new JTextField();
+		textFieldPrice = new JTextArea();
 		GridBagConstraints gbc_textFieldPrice = new GridBagConstraints();
 		gbc_textFieldPrice.insets = new Insets(0, 0, 5, 5);
 		gbc_textFieldPrice.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldPrice.gridx = 5;
 		gbc_textFieldPrice.gridy = 2;
 		getContentPane().add(textFieldPrice, gbc_textFieldPrice);
-		textFieldPrice.setColumns(10);
+		textFieldPrice.setColumns(5);
 
 		textFieldQuantity = new JTextField();
 		GridBagConstraints gbc_textFieldQuantity = new GridBagConstraints();
@@ -206,7 +224,7 @@ public class OrderMenu extends JFrame {
 		gbc_textFieldQuantity.gridx = 7;
 		gbc_textFieldQuantity.gridy = 2;
 		getContentPane().add(textFieldQuantity, gbc_textFieldQuantity);
-		textFieldQuantity.setColumns(10);
+		textFieldQuantity.setColumns(3);
 
 		JButton btnNewButton = new JButton("New button");
 		btnNewButton.addActionListener(new ActionListener() {
