@@ -24,16 +24,17 @@ import com.levins.food.menu.jpa.DataBaseConnection;
 import com.levins.food.menu.jpa.Employee;
 import com.levins.food.menu.jpa.Food;
 import com.levins.food.menu.jpa.FoodManage;
+import com.levins.food.menu.jpa.MyOrder;
 import com.levins.food.menu.ui.table.order.SearchModelOrder;
 import com.levins.food.menu.ui.table.order.TableModelOrder;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 import javax.swing.JTextField;
-import javax.transaction.Transactional.TxType;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -53,6 +54,7 @@ public class OrderMenu extends JFrame {
 	private double totalCost;
 	private List<String> foodNameList;
 	private List<Food> orderList;
+	List<String> orderListToString;
 
 	private JTable table;
 	private SearchModelOrder model;
@@ -69,6 +71,11 @@ public class OrderMenu extends JFrame {
 	@SuppressWarnings("unchecked")
 	public OrderMenu() {
 		manage = new FoodManage();
+		model = new SearchModelOrder();
+		orderList = new ArrayList<Food>();
+		orderListToString = new ArrayList<>();
+		tableModel = new TableModelOrder();
+
 		setTitle("Food Order");
 		setSize(900, 500);
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -82,8 +89,6 @@ public class OrderMenu extends JFrame {
 				1.0, 0.0, Double.MIN_VALUE };
 		getContentPane().setLayout(gridBagLayout);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		orderList = new ArrayList<Food>();
-		tableModel = new TableModelOrder();
 
 		JSeparator separator_2 = new JSeparator();
 		GridBagConstraints gbc_separator_2 = new GridBagConstraints();
@@ -253,6 +258,7 @@ public class OrderMenu extends JFrame {
 
 		comboBoxFood = new JComboBox(new Object[] {});
 		comboBoxFood.insertItemAt("", 0);
+		comboBoxFood.setSelectedIndex(0);
 		comboBoxFood.setToolTipText("Choice food");
 		comboBoxFood.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -338,18 +344,25 @@ public class OrderMenu extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				FoodManage manage = new FoodManage();
 
-				Employee employee = createdOrderedEmployee(manage);
-
 				Food orderedFood = createOrderedFood(manage);
 				orderedFood.setQuantity(Integer.valueOf(textFieldQuantity
 						.getText()));
-				// TODO need to implement add in table info
+
 				orderList.add(orderedFood);
+				orderListToString.add(orderedFood.toString());
+				model.setListOfFood(orderList);
 				totalCost += (orderedFood.getPrice() * orderedFood
 						.getQuantity());
 				textAreaTotalCost.setText("");
 				textAreaTotalCost.append(String.valueOf(totalCost));
 				textFieldQuantity.setText("1");
+
+				try {
+					tableModel.setListToTable(SearchModelOrder
+							.readString(orderListToString));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
 
 			}
 
@@ -365,6 +378,41 @@ public class OrderMenu extends JFrame {
 				Food selectedFood = (Food) entityManager.getReference(
 						Food.class, foodID);
 				return selectedFood;
+			}
+
+		});
+		GridBagConstraints gbc_btnB = new GridBagConstraints();
+		gbc_btnB.insets = new Insets(0, 0, 5, 5);
+		gbc_btnB.gridx = 1;
+		gbc_btnB.gridy = 13;
+		getContentPane().add(btnAdd, gbc_btnB);
+
+		JButton btnBuy = new JButton("Buy");
+		btnBuy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				FoodManage manage = new FoodManage();
+				Employee employee = createdOrderedEmployee(manage);
+
+				Date dateValue = (Date) datePicker.getModel().getValue();
+				MyOrder purch = new MyOrder(employee, dateValue, orderList,
+						totalCost);
+				employee.getPurchase().add(purch);
+				DataBaseConnection connection = DataBaseConnection
+						.getInstance();
+				EntityManager entityManager = connection
+						.getEntityManager(FoodManage.UNIT_NAME);
+				
+				entityManager.getTransaction().begin();
+				entityManager.persist(employee);
+				entityManager.getTransaction().commit();
+
+				entityManager.getTransaction().begin();
+				entityManager.persist(purch);
+				entityManager.getTransaction().commit();
+
+				System.out.println(purch.toString());
+				clearAllField();
+
 			}
 
 			private Employee createdOrderedEmployee(FoodManage manage) {
@@ -386,28 +434,22 @@ public class OrderMenu extends JFrame {
 						id);
 				return employee;
 			}
-		});
-		GridBagConstraints gbc_btnB = new GridBagConstraints();
-		gbc_btnB.insets = new Insets(0, 0, 5, 5);
-		gbc_btnB.gridx = 1;
-		gbc_btnB.gridy = 13;
-		getContentPane().add(btnAdd, gbc_btnB);
-
-		JButton btnBuy = new JButton("Buy");
-		btnBuy.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				clearAllField();
-				for (Food food : orderList) {
-					System.out.println(food.toString());
-				}
-			}
 
 			private void clearAllField() {
 				textAreaTotalCost.setText("0.0");
 				textFieldQuantity.setText("1");
+				textFieldPrice.setText("0");
 				comboBoxDepartment.setSelectedIndex(0);
-				comboBoxFood.setSelectedIndex(0);
 				datePicker.getJFormattedTextField().setText("");
+				comboBoxFood.setModel(new JComboBox<>(new Object[] {})
+						.getModel());
+				orderListToString = new ArrayList<>();
+				try {
+					tableModel.setListToTable(SearchModelOrder
+							.readString(orderListToString));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
 
 			}
 		});

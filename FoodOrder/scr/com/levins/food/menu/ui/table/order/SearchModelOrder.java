@@ -15,13 +15,13 @@ import com.levins.food.menu.jpa.Food;
 import com.levins.food.menu.jpa.FoodMenuUnit;
 
 public class SearchModelOrder {
-	private List<FoodMenuUnit> listOfUnit;
+	private List<Food> listOfUnit;
 
-	public List<FoodMenuUnit> getListOfAnimal() {
+	public List<Food> getListOfAnimal() {
 		return listOfUnit;
 	}
 
-	public void setListOfAnimal(List<FoodMenuUnit> singleLine) {
+	public void setListOfFood(List<Food> singleLine) {
 		this.listOfUnit = singleLine;
 	}
 
