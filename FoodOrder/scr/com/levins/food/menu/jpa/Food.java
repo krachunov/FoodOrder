@@ -1,6 +1,7 @@
 package com.levins.food.menu.jpa;
 
 import java.util.Date;
+import java.util.Random;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +15,7 @@ import javax.persistence.ManyToOne;
 @Entity(name = "levins_food")
 public class Food implements FoodMenuUnit {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	// @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
 	private Long id;
 
@@ -27,15 +28,15 @@ public class Food implements FoodMenuUnit {
 	@Column(name = "singlePrice")
 	private Double price;
 
-	 @Column(name = "count")
-	 private Integer quantity;
-	
-	 @ManyToOne(fetch = FetchType.EAGER)
-	 @JoinColumn(name = "food_id")
-	 private MyOrder order;
-	
-	 @Column(name = "totalPrice")
-	 private Double totalPrice;
+	@Column(name = "count")
+	private Integer quantity;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "food_id")
+	private MyOrder order;
+
+	@Column(name = "totalPrice")
+	private Double totalPrice;
 
 	public Food() {
 	}
@@ -46,6 +47,7 @@ public class Food implements FoodMenuUnit {
 		this.price = price;
 		this.quantity = quantity;
 		this.totalPrice = price * quantity;
+		this.id=createRandomgID();
 	}
 
 	public Food(Date date, String foodName, Double price) {
@@ -87,16 +89,23 @@ public class Food implements FoodMenuUnit {
 		this.price = price;
 	}
 
-	 public Integer getQuantity() {
-	 return quantity;
-	 }
-	
-	 public void setQuantity(Integer quantity) {
-	 this.quantity = quantity;
-	 }
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
 
 	@Override
 	public String toString() {
-		return getId() + ";" + getDate() + ";" + getValue() + ";" + getPrice()+ ";" +getQuantity();
+		return getId() + ";" + getDate() + ";" + getValue() + ";" + getPrice()
+				+ ";" + getQuantity();
+	}
+	private Long createRandomgID() {
+		long range = 1234567L;
+		Random r = new Random();
+		long number = (long)(r.nextDouble()*range);
+		return number;
 	}
 }

@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 
 import javax.swing.JTextField;
 
@@ -366,6 +367,7 @@ public class OrderMenu extends JFrame {
 
 			}
 
+
 			private Food createOrderedFood(FoodManage manage) {
 				Date date = (Date) datePicker.getModel().getValue();
 				String selectedFoodName = (String) comboBoxFood.getModel()
@@ -397,20 +399,13 @@ public class OrderMenu extends JFrame {
 				MyOrder purch = new MyOrder(employee, dateValue, orderList,
 						totalCost);
 				employee.getPurchase().add(purch);
-				DataBaseConnection connection = DataBaseConnection
-						.getInstance();
-				EntityManager entityManager = connection
-						.getEntityManager(FoodManage.UNIT_NAME);
-				
-				entityManager.getTransaction().begin();
-				entityManager.persist(employee);
-				entityManager.getTransaction().commit();
 
-				entityManager.getTransaction().begin();
-				entityManager.persist(purch);
-				entityManager.getTransaction().commit();
+				manage.addUnit(employee);
+				manage.addUnit(purch);
 
 				System.out.println(purch.toString());
+				purch = null;
+				employee = null;
 				clearAllField();
 
 			}

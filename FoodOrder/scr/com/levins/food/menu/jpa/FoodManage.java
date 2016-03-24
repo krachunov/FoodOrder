@@ -2,10 +2,8 @@ package com.levins.food.menu.jpa;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Stack;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -218,7 +216,7 @@ public class FoodManage {
 		addUnit(food);
 	}
 
-	private void addUnit(FoodMenuUnit unit) {
+	public void addUnit(FoodMenuUnit unit) {
 
 		EntityManager entityManager = connection
 				.getEntityManager(DataBaseConnection.UNIT);
