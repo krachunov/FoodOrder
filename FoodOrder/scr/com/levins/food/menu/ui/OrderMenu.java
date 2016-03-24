@@ -22,6 +22,7 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import com.levins.food.menu.jpa.DataBaseConnection;
 import com.levins.food.menu.jpa.Employee;
+import com.levins.food.menu.jpa.Food;
 import com.levins.food.menu.jpa.FoodManage;
 import com.levins.food.menu.ui.table.order.SearchModelOrder;
 import com.levins.food.menu.ui.table.order.TableModelOrder;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.swing.JTextField;
+import javax.transaction.Transactional.TxType;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -315,6 +317,7 @@ public class OrderMenu extends JFrame {
 
 		textFieldQuantity = new JTextField();
 		textFieldQuantity.setToolTipText("Choose quantity");
+		textFieldQuantity.setText("1");
 		GridBagConstraints gbc_textFieldQuantity = new GridBagConstraints();
 		gbc_textFieldQuantity.anchor = GridBagConstraints.WEST;
 		gbc_textFieldQuantity.insets = new Insets(0, 0, 5, 5);
@@ -327,12 +330,39 @@ public class OrderMenu extends JFrame {
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				FoodManage manage = new FoodManage();
-				String selectedDepartment = (String) comboBoxDepartment.getModel().getSelectedItem();
-				String selectedEmployeeName = (String) comboBoxEmployee.getModel().getSelectedItem();
-				Long employeesID = manage.getEmployeesID(selectedEmployeeName,selectedDepartment);
-				Employee employee = getEmployeeFromBase(employeesID);
-				System.out.println(employee.toString());
 
+				Employee employee = createdOrderedEmployee(manage);
+
+				Food orderedFood = createOrderedFood(manage);
+				orderedFood.setQuantity(Integer.valueOf(textFieldQuantity
+						.getText()));
+				System.out.println(orderedFood.toString());
+
+			}
+
+			private Food createOrderedFood(FoodManage manage) {
+				Date date = (Date) datePicker.getModel().getValue();
+				String selectedFoodName = (String) comboBoxFood.getModel()
+						.getSelectedItem();
+				Long foodID = manage.getFoodID(date, selectedFoodName);
+
+				Object connection = DataBaseConnection.getInstance();
+				EntityManager entityManager = (((DataBaseConnection) connection)
+						.getEntityManager(FoodManage.UNIT_NAME));
+				Food selectedFood = (Food) entityManager.getReference(
+						Food.class, foodID);
+				return selectedFood;
+			}
+
+			private Employee createdOrderedEmployee(FoodManage manage) {
+				String selectedDepartment = (String) comboBoxDepartment
+						.getModel().getSelectedItem();
+				String selectedEmployeeName = (String) comboBoxEmployee
+						.getModel().getSelectedItem();
+				Long employeesID = manage.getEmployeesID(selectedEmployeeName,
+						selectedDepartment);
+				Employee employee = getEmployeeFromBase(employeesID);
+				return employee;
 			}
 
 			private Employee getEmployeeFromBase(Long id) {

@@ -150,6 +150,19 @@ public class FoodManage {
 		return employeeID;
 	}
 
+	public Long getFoodID(Date date, String foodName) {
+		String dataValue = createdDate(date);
+		EntityManager entityManager = connection.getEntityManager(UNIT_NAME);
+		String string = String
+				.format("select e.id FROM levins_food e where e.foodName like (:arg1) and e.date like '%s%s'",
+						dataValue, "%");
+		Query query = entityManager.createQuery(string);
+		query.setParameter("arg1", foodName);
+
+		Long foodId = (Long) query.getSingleResult();
+		return foodId;
+	}
+
 	public List<String> getAllDepartment() {
 		EntityManager entityManager = connection.getEntityManager(UNIT_NAME);
 		Query query = entityManager

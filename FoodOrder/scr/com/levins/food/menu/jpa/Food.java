@@ -97,6 +97,6 @@ public class Food implements FoodMenuUnit {
 
 	@Override
 	public String toString() {
-		return getId() + ";" + getDate() + ";" + getValue() + ";" + getPrice();
+		return getId() + ";" + getDate() + ";" + getValue() + ";" + getPrice()+ ";" +getQuantity();
 	}
 }
