@@ -14,7 +14,7 @@ import javax.persistence.Query;
 
 public class FoodManage {
 	private DataBaseConnection connection;
-	private static final String UNIT_NAME = "FoodMenu";
+	public static final String UNIT_NAME = "FoodMenu";
 
 	public FoodManage() {
 		this.connection = DataBaseConnection.getInstance();
@@ -75,7 +75,9 @@ public class FoodManage {
 	public Double getPrice(String foodName, Date date) {
 		String dataValue = createdDate(date);
 		EntityManager entityManager = connection.getEntityManager(UNIT_NAME);
-		String string = String.format("select e.price FROM levins_food e where e.foodName like (:arg1) and e.date like '%s%s'",dataValue, "%");
+		String string = String
+				.format("select e.price FROM levins_food e where e.foodName like (:arg1) and e.date like '%s%s'",
+						dataValue, "%");
 		Query query = entityManager.createQuery(string);
 		query.setParameter("arg1", foodName);
 
@@ -135,6 +137,17 @@ public class FoodManage {
 		@SuppressWarnings("unchecked")
 		List<String> resultList = query.getResultList();
 		return resultList;
+	}
+
+	public Long getEmployeesID(String employeeName, String employeeDepratment) {
+		EntityManager entityManager = connection.getEntityManager(UNIT_NAME);
+		Query query = entityManager
+				.createQuery("select e.id FROM levins_employees e where e.name like (:arg1) and e.department like (:arg2)");
+		query.setParameter("arg1", employeeName);
+		query.setParameter("arg2", employeeDepratment);
+
+		Long employeeID = (Long) query.getSingleResult();
+		return employeeID;
 	}
 
 	public List<String> getAllDepartment() {

@@ -46,7 +46,7 @@ public class Demo {
 		// for (Food food : listFood) {
 		// totalAmount += food.getPrice();
 		// }
-		// // MyOrder purch = new MyOrder(employee, date, listFood,
+		// MyOrder purch = new MyOrder(employee, date, listFood,
 		// totalAmount);
 		// employee.getPurchase().add(purch);
 		// action.removeEmployee("%", "IT");
