@@ -27,7 +27,7 @@ import com.levins.food.menu.jpa.FoodManage;
 import com.levins.food.menu.ui.table.order.SearchModelOrder;
 import com.levins.food.menu.ui.table.order.TableModelOrder;
 
-import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -37,20 +37,22 @@ import javax.transaction.Transactional.TxType;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Button;
 
 @SuppressWarnings("rawtypes")
 public class OrderMenu extends JFrame {
 	private static final long serialVersionUID = -7500945945511983948L;
-	FoodManage manage;
-	JComboBox comboBoxDepartment;
-	JComboBox comboBoxEmployee;
-	JComboBox comboBoxFood;
-	JDatePickerImpl datePicker;
-	String selectedDepartment;
+	private FoodManage manage;
+	private JComboBox comboBoxDepartment;
+	private JComboBox comboBoxEmployee;
+	private JComboBox comboBoxFood;
+	private JDatePickerImpl datePicker;
+	private String selectedDepartment;
 	private JTextField textFieldQuantity;
 	private JTextArea textFieldPrice;
-	private List<String> foodList;
+	private JTextArea textAreaTotalCost;
+	private double totalCost;
+	private List<String> foodNameList;
+	private List<Food> orderList;
 
 	private JTable table;
 	private SearchModelOrder model;
@@ -70,21 +72,22 @@ public class OrderMenu extends JFrame {
 		setTitle("Food Order");
 		setSize(900, 500);
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 41, 0, 0, 0, 130 };
+		gridBagLayout.columnWidths = new int[] { 41, 0, 0, 0, 130, 130, 81 };
 		gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				48, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		gridBagLayout.columnWeights = new double[] { 1.0, 1.0, 0.0, 0.0, 0.0 };
+		gridBagLayout.columnWeights = new double[] { 1.0, 1.0, 0.0, 0.0, 0.0,
+				0.0, 1.0 };
 		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 				0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-				0.0, 0.0, Double.MIN_VALUE };
+				1.0, 0.0, Double.MIN_VALUE };
 		getContentPane().setLayout(gridBagLayout);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		orderList = new ArrayList<Food>();
 		tableModel = new TableModelOrder();
 
 		JSeparator separator_2 = new JSeparator();
 		GridBagConstraints gbc_separator_2 = new GridBagConstraints();
-		gbc_separator_2.gridwidth = 3;
+		gbc_separator_2.gridwidth = 5;
 		gbc_separator_2.insets = new Insets(0, 0, 5, 0);
 		gbc_separator_2.gridx = 2;
 		gbc_separator_2.gridy = 0;
@@ -101,6 +104,8 @@ public class OrderMenu extends JFrame {
 		// box1
 		List<String> departmentList = manage.getAllDepartment();
 		comboBoxDepartment = new JComboBox(departmentList.toArray());
+		comboBoxDepartment.insertItemAt("", 0);
+		comboBoxDepartment.setSelectedIndex(0);
 		comboBoxDepartment.setToolTipText("Select Department");
 		comboBoxDepartment.setMaximumRowCount(4);
 		selectedDepartment = (String) comboBoxDepartment.getSelectedItem();
@@ -162,6 +167,7 @@ public class OrderMenu extends JFrame {
 		// TODO
 		JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane1 = new GridBagConstraints();
+		gbc_scrollPane1.gridwidth = 3;
 		gbc_scrollPane1.gridheight = 16;
 		gbc_scrollPane1.insets = new Insets(0, 0, 5, 0);
 		gbc_scrollPane1.gridx = 4;
@@ -214,8 +220,8 @@ public class OrderMenu extends JFrame {
 		datePicker.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Date date = (Date) datePicker.getModel().getValue();
-				foodList = manage.getAllFoodByDate(date);
-				comboBoxFood.setModel(new JComboBox<>(foodList.toArray())
+				foodNameList = manage.getAllFoodByDate(date);
+				comboBoxFood.setModel(new JComboBox<>(foodNameList.toArray())
 						.getModel());
 			}
 		});
@@ -246,6 +252,7 @@ public class OrderMenu extends JFrame {
 		getContentPane().add(lblFood, gbc_lblFood);
 
 		comboBoxFood = new JComboBox(new Object[] {});
+		comboBoxFood.insertItemAt("", 0);
 		comboBoxFood.setToolTipText("Choice food");
 		comboBoxFood.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -336,7 +343,13 @@ public class OrderMenu extends JFrame {
 				Food orderedFood = createOrderedFood(manage);
 				orderedFood.setQuantity(Integer.valueOf(textFieldQuantity
 						.getText()));
-				System.out.println(orderedFood.toString());
+				// TODO need to implement add in table info
+				orderList.add(orderedFood);
+				totalCost += (orderedFood.getPrice() * orderedFood
+						.getQuantity());
+				textAreaTotalCost.setText("");
+				textAreaTotalCost.append(String.valueOf(totalCost));
+				textFieldQuantity.setText("1");
 
 			}
 
@@ -381,11 +394,46 @@ public class OrderMenu extends JFrame {
 		getContentPane().add(btnAdd, gbc_btnB);
 
 		JButton btnBuy = new JButton("Buy");
+		btnBuy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				clearAllField();
+				for (Food food : orderList) {
+					System.out.println(food.toString());
+				}
+			}
+
+			private void clearAllField() {
+				textAreaTotalCost.setText("0.0");
+				textFieldQuantity.setText("1");
+				comboBoxDepartment.setSelectedIndex(0);
+				comboBoxFood.setSelectedIndex(0);
+				datePicker.getJFormattedTextField().setText("");
+
+			}
+		});
 		GridBagConstraints gbc_btnBuy = new GridBagConstraints();
-		gbc_btnBuy.insets = new Insets(0, 0, 5, 0);
+		gbc_btnBuy.insets = new Insets(0, 0, 5, 5);
 		gbc_btnBuy.gridx = 4;
 		gbc_btnBuy.gridy = 18;
 		getContentPane().add(btnBuy, gbc_btnBuy);
+
+		JLabel lblTotalCost = new JLabel("Total cost");
+		GridBagConstraints gbc_lblTotalCost = new GridBagConstraints();
+		gbc_lblTotalCost.anchor = GridBagConstraints.EAST;
+		gbc_lblTotalCost.insets = new Insets(0, 0, 5, 5);
+		gbc_lblTotalCost.gridx = 5;
+		gbc_lblTotalCost.gridy = 18;
+		getContentPane().add(lblTotalCost, gbc_lblTotalCost);
+
+		textAreaTotalCost = new JTextArea();
+		textAreaTotalCost.setTabSize(3);
+		textAreaTotalCost.setText("0.0");
+		GridBagConstraints gbc_textAreaTotalCost = new GridBagConstraints();
+		gbc_textAreaTotalCost.insets = new Insets(0, 0, 5, 0);
+		gbc_textAreaTotalCost.fill = GridBagConstraints.BOTH;
+		gbc_textAreaTotalCost.gridx = 6;
+		gbc_textAreaTotalCost.gridy = 18;
+		getContentPane().add(textAreaTotalCost, gbc_textAreaTotalCost);
 		this.pack();
 	}
 
