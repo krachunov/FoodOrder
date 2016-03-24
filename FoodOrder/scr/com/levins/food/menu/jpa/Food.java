@@ -47,7 +47,7 @@ public class Food implements FoodMenuUnit {
 		this.price = price;
 		this.quantity = quantity;
 		this.totalPrice = price * quantity;
-		this.id=createRandomgID();
+//		this.id=createRandomgID();
 	}
 
 	public Food(Date date, String foodName, Double price) {

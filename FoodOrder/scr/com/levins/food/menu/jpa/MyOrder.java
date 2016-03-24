@@ -2,6 +2,7 @@ package com.levins.food.menu.jpa;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,9 +17,9 @@ import javax.persistence.OneToMany;
 
 @Entity(name = "levins_food_order")
 public class MyOrder implements FoodMenuUnit {
-	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
+	@Id
 	private Long id;
 
 	@Column(name = "date")
@@ -38,6 +39,13 @@ public class MyOrder implements FoodMenuUnit {
 	private Double totalAmount;
 
 	public MyOrder() {
+	}
+
+	private Long createRandomgID() {
+		long range = 1234567L;
+		Random r = new Random();
+		long number = (long) (r.nextDouble() * range);
+		return number;
 	}
 
 	public MyOrder(Employee currentEmployee, Date date, List<Food> listFood,
