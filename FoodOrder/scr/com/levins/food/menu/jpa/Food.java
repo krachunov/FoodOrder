@@ -16,6 +16,12 @@ import javax.persistence.ManyToOne;
 
 @Entity(name = "levins_food")
 public class Food implements FoodMenuUnit {
+	public static final int INDEX_ID = 0;
+	public static final int INDEX_DATE = 1;
+	public static final int INDEX_FOOD_NAME = 2;
+	public static final int INDEX_PIRCE = 3;
+	public static final int INDEX_QUANTITY = 4;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
@@ -32,12 +38,12 @@ public class Food implements FoodMenuUnit {
 
 	@Column(name = "count")
 	private Integer quantity;
-	
+
 	@ManyToMany(mappedBy = "listFood")
 	private List<MyOrder> order;
 
-//	@Column(name = "totalPrice")
-//	private Double totalPrice;
+	// @Column(name = "totalPrice")
+	// private Double totalPrice;
 
 	public Food() {
 	}
@@ -47,8 +53,17 @@ public class Food implements FoodMenuUnit {
 		this.foodName = foodName;
 		this.price = price;
 		this.quantity = quantity;
-//		this.totalPrice = price * quantity;
+		// this.totalPrice = price * quantity;
 		// this.id=createRandomgID();
+	}
+
+	public Food(Long id, Date date, String foodName, Double price,
+			Integer quantity) {
+		this.id = id;
+		this.date = date;
+		this.foodName = foodName;
+		this.price = price;
+		this.quantity = quantity;
 	}
 
 	public Food(Date date, String foodName, Double price) {

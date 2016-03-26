@@ -197,6 +197,8 @@ public class OrderMenu extends JFrame {
 		gbc_label_1.gridy = 4;
 		getContentPane().add(label_1, gbc_label_1);
 		comboBoxEmployee = new JComboBox(employeeList.toArray());
+		comboBoxEmployee.setMaximumRowCount(10);
+		comboBoxDepartment.setMaximumRowCount(10);
 		comboBoxEmployee.setToolTipText("Select Employee");
 		aListener.addBox(comboBoxEmployee);
 		aListener.addBox(comboBoxEmployee);
@@ -349,8 +351,7 @@ public class OrderMenu extends JFrame {
 				orderedFood.setQuantity(Integer.valueOf(textFieldQuantity
 						.getText()));
 
-				orderList.add(orderedFood);
-				orderListToString.add(orderedFood.toString());
+				System.out.println(orderedFood.toString());
 				model.setListOfFood(orderList);
 				totalCost += (orderedFood.getPrice() * orderedFood
 						.getQuantity());
@@ -358,6 +359,9 @@ public class OrderMenu extends JFrame {
 				textAreaTotalCost.append(String.valueOf(totalCost));
 				textFieldQuantity.setText("1");
 
+				orderList.add(orderedFood);
+				String stringToTableView = orderedFood.toString();
+				orderListToString.add(stringToTableView);
 				try {
 					tableModel.setListToTable(SearchModelOrder
 							.readString(orderListToString));
@@ -366,7 +370,6 @@ public class OrderMenu extends JFrame {
 				}
 
 			}
-
 
 			private Food createOrderedFood(FoodManage manage) {
 				Date date = (Date) datePicker.getModel().getValue();
@@ -439,7 +442,7 @@ public class OrderMenu extends JFrame {
 				comboBoxFood.setModel(new JComboBox<>(new Object[] {})
 						.getModel());
 				orderListToString = new ArrayList<>();
-				totalCost=0;
+				totalCost = 0;
 				try {
 					tableModel.setListToTable(SearchModelOrder
 							.readString(orderListToString));

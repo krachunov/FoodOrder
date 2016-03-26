@@ -17,22 +17,12 @@ import com.levins.food.menu.jpa.FoodMenuUnit;
 public class SearchModelOrder {
 	private List<Food> listOfUnit;
 
-	public List<Food> getListOfAnimal() {
+	public List<Food> getListOfFood() {
 		return listOfUnit;
 	}
 
 	public void setListOfFood(List<Food> singleLine) {
 		this.listOfUnit = singleLine;
-	}
-
-	public static void writeNewFile(Queue<String> sorceToWrite,
-			String outputFile) throws IOException {
-		try (BufferedWriter bufferWrite = new BufferedWriter(new FileWriter(
-				outputFile))) {
-			while (sorceToWrite.size() > 0) {
-				bufferWrite.write(sorceToWrite.poll());
-			}
-		}
 	}
 
 	public static List<FoodMenuUnit> readString(List<String> list)
@@ -46,10 +36,15 @@ public class SearchModelOrder {
 			Date parsedDate = formatter.parse(foodRecord[1]);
 
 			// TODO
+			Long current_id = Long.valueOf(foodRecord[Food.INDEX_ID]);
+			String currentFoodName = foodRecord[Food.INDEX_FOOD_NAME];
+			Double currentPrice = Double.valueOf(foodRecord[Food.INDEX_PIRCE]);
+			Integer currentCuantity = Integer
+					.valueOf(foodRecord[Food.INDEX_QUANTITY]);
 
-			FoodMenuUnit emp = new Food(parsedDate, foodRecord[2],
-					Double.valueOf(foodRecord[3]));
-			lineList.add(emp);
+			FoodMenuUnit food = new Food(current_id, parsedDate,
+					currentFoodName, currentPrice, currentCuantity);
+			lineList.add(food);
 		}
 		return lineList;
 	}

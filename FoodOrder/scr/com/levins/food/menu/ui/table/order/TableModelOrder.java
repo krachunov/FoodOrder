@@ -4,13 +4,12 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.levins.food.menu.jpa.Employee;
 import com.levins.food.menu.jpa.Food;
 import com.levins.food.menu.jpa.FoodMenuUnit;
 
 @SuppressWarnings("serial")
 public class TableModelOrder extends AbstractTableModel {
-	private static final int COLUMNS_COUNT = 4;
+	private static final int COLUMNS_COUNT = 5;
 	private List<FoodMenuUnit> listToTable;
 
 	public List<FoodMenuUnit> getListToTable() {
@@ -48,6 +47,8 @@ public class TableModelOrder extends AbstractTableModel {
 			return singleResult.getValue();
 		case 3:
 			return singleResult.getPrice();
+		case 4:
+			return singleResult.getQuantity();
 		}
 		return null;
 	}
