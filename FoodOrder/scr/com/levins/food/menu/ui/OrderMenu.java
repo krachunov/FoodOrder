@@ -356,7 +356,7 @@ public class OrderMenu extends JFrame {
 				totalCost += (orderedFood.getPrice() * orderedFood
 						.getQuantity());
 				textAreaTotalCost.setText("");
-				textAreaTotalCost.append(String.valueOf(totalCost));
+				textAreaTotalCost.append(String.valueOf(totalCost+" лв."));
 				textFieldQuantity.setText("1");
 
 				orderList.add(orderedFood);
@@ -468,10 +468,10 @@ public class OrderMenu extends JFrame {
 
 		textAreaTotalCost = new JTextArea();
 		textAreaTotalCost.setTabSize(3);
-		textAreaTotalCost.setText("0.0");
+		textAreaTotalCost.setText("0.0 лв.");
 		GridBagConstraints gbc_textAreaTotalCost = new GridBagConstraints();
+		gbc_textAreaTotalCost.anchor = GridBagConstraints.WEST;
 		gbc_textAreaTotalCost.insets = new Insets(0, 0, 5, 0);
-		gbc_textAreaTotalCost.fill = GridBagConstraints.BOTH;
 		gbc_textAreaTotalCost.gridx = 6;
 		gbc_textAreaTotalCost.gridy = 18;
 		getContentPane().add(textAreaTotalCost, gbc_textAreaTotalCost);
