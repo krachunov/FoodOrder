@@ -1,6 +1,7 @@
 package com.levins.food.menu.jpa;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import javax.persistence.Column;
@@ -10,12 +11,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 @Entity(name = "levins_food")
 public class Food implements FoodMenuUnit {
 	@Id
-	// @GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
 	private Long id;
 
@@ -30,13 +32,12 @@ public class Food implements FoodMenuUnit {
 
 	@Column(name = "count")
 	private Integer quantity;
+	
+	@ManyToMany(mappedBy = "listFood")
+	private List<MyOrder> order;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "food_id")
-	private MyOrder order;
-
-	@Column(name = "totalPrice")
-	private Double totalPrice;
+//	@Column(name = "totalPrice")
+//	private Double totalPrice;
 
 	public Food() {
 	}
@@ -46,8 +47,8 @@ public class Food implements FoodMenuUnit {
 		this.foodName = foodName;
 		this.price = price;
 		this.quantity = quantity;
-		this.totalPrice = price * quantity;
-//		this.id=createRandomgID();
+//		this.totalPrice = price * quantity;
+		// this.id=createRandomgID();
 	}
 
 	public Food(Date date, String foodName, Double price) {
@@ -102,10 +103,11 @@ public class Food implements FoodMenuUnit {
 		return getId() + ";" + getDate() + ";" + getValue() + ";" + getPrice()
 				+ ";" + getQuantity();
 	}
+
 	private Long createRandomgID() {
 		long range = 1234567L;
 		Random r = new Random();
-		long number = (long)(r.nextDouble()*range);
+		long number = (long) (r.nextDouble() * range);
 		return number;
 	}
 }
