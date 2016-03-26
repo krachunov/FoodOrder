@@ -439,6 +439,7 @@ public class OrderMenu extends JFrame {
 				comboBoxFood.setModel(new JComboBox<>(new Object[] {})
 						.getModel());
 				orderListToString = new ArrayList<>();
+				totalCost=0;
 				try {
 					tableModel.setListToTable(SearchModelOrder
 							.readString(orderListToString));
