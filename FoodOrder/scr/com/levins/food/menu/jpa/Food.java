@@ -119,10 +119,4 @@ public class Food implements FoodMenuUnit {
 				+ ";" + getQuantity();
 	}
 
-	private Long createRandomgID() {
-		long range = 1234567L;
-		Random r = new Random();
-		long number = (long) (r.nextDouble() * range);
-		return number;
-	}
 }

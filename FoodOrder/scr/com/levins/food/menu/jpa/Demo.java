@@ -32,35 +32,20 @@ public class Demo {
 	}
 
 	// "dd_MM_yyyy" "dd_MM_yyyy':'HH:mm:"
-	@SuppressWarnings("unused")
-	public static Date createdDate(String format) {
+	public static String createdDate(Date date) {
+		String format = "dd/MMMM/yyyy' - 'HH:mm:";
 		DateFormat df = new SimpleDateFormat(format);
 		Date today = Calendar.getInstance().getTime();
 		String reportDate = df.format(today);
-		return today;
+		return reportDate;
 	}
 
 	public static void main(String[] args) {
 
-		// Double totalAmount = 0d;
-		// for (Food food : listFood) {
-		// totalAmount += food.getPrice();
-		// }
-		// MyOrder purch = new MyOrder(employee, date, listFood,
-		// totalAmount);
-		// employee.getPurchase().add(purch);
-		// action.removeEmployee("%", "IT");
-
-		// FoodManage manager = new FoodManage();
-		// System.out.println(manager.getAllDepartment().size());
-
 		OrderMenu menu = new OrderMenu();
 		menu.setVisible(true);
-		
-		
-//		Date createdDate = createdDate("yyyy-MM-dd");
-//		FoodManage manage = new FoodManage();
-//		System.out.println(manage.getAllFodd(createdDate).size());
 
+//		Date d = new Date();
+//		System.out.println(createdDate(d));
 	}
 }
