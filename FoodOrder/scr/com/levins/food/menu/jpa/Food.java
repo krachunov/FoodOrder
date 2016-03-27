@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
@@ -36,6 +37,7 @@ public class Food implements FoodMenuUnit {
 	@Column(name = "singlePrice")
 	private Double price;
 
+	@JoinTable(name = "levins_order", joinColumns = { @JoinColumn(name = "food_count") })
 	@Column(name = "count")
 	private Integer quantity;
 

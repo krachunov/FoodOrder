@@ -42,6 +42,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.awt.Color;
 
 @SuppressWarnings("rawtypes")
 public class OrderMenu extends JFrame {
@@ -74,7 +75,7 @@ public class OrderMenu extends JFrame {
 
 	@SuppressWarnings("unchecked")
 	public OrderMenu() throws IOException {
-		//TODO need to fix picture size
+		// TODO need to fix picture size
 		File file = new File("resources/bg.jpg");
 		BufferedImage myImage = ImageIO.read(new File("resources/bg.jpg"));
 		setContentPane(new ImagePanel(myImage));
@@ -363,7 +364,7 @@ public class OrderMenu extends JFrame {
 				totalCost += (orderedFood.getPrice() * orderedFood
 						.getQuantity());
 				textAreaTotalCost.setText("");
-				textAreaTotalCost.append(String.valueOf(totalCost+" лв."));
+				textAreaTotalCost.append(String.valueOf(totalCost + " лв."));
 				textFieldQuantity.setText("1");
 
 				orderList.add(orderedFood);
@@ -449,6 +450,7 @@ public class OrderMenu extends JFrame {
 				comboBoxFood.setModel(new JComboBox<>(new Object[] {})
 						.getModel());
 				orderListToString = new ArrayList<>();
+				orderList = new ArrayList<Food>();
 				totalCost = 0;
 				try {
 					tableModel.setListToTable(SearchModelOrder
@@ -466,6 +468,7 @@ public class OrderMenu extends JFrame {
 		getContentPane().add(btnBuy, gbc_btnBuy);
 
 		JLabel lblTotalCost = new JLabel("Total cost");
+		lblTotalCost.setBackground(Color.GRAY);
 		GridBagConstraints gbc_lblTotalCost = new GridBagConstraints();
 		gbc_lblTotalCost.anchor = GridBagConstraints.EAST;
 		gbc_lblTotalCost.insets = new Insets(0, 0, 5, 5);
