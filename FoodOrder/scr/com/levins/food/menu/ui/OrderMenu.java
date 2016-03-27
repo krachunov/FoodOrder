@@ -75,7 +75,6 @@ public class OrderMenu extends JFrame {
 
 	@SuppressWarnings("unchecked")
 	public OrderMenu() throws IOException {
-		// TODO need to fix picture size
 		File file = new File("resources/bg.jpg");
 		BufferedImage myImage = ImageIO.read(new File("resources/bg.jpg"));
 		setContentPane(new ImagePanel(myImage));
@@ -84,6 +83,7 @@ public class OrderMenu extends JFrame {
 		orderList = new ArrayList<Food>();
 		orderListToString = new ArrayList<>();
 		tableModel = new TableModelOrder();
+		setResizable(false);
 
 		setTitle("Food Order");
 		setSize(956, 573);
@@ -408,6 +408,7 @@ public class OrderMenu extends JFrame {
 				Employee employee = createdOrderedEmployee(manage);
 
 				Date dateValue = (Date) datePicker.getModel().getValue();
+
 				MyOrder purch = new MyOrder(employee, dateValue, orderList,
 						totalCost);
 				employee.getPurchase().add(purch);

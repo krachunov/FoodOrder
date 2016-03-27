@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity(name = "levins_food")
 public class Food implements FoodMenuUnit {
@@ -37,15 +38,11 @@ public class Food implements FoodMenuUnit {
 	@Column(name = "singlePrice")
 	private Double price;
 
-	@JoinTable(name = "levins_order", joinColumns = { @JoinColumn(name = "food_count") })
 	@Column(name = "count")
 	private Integer quantity;
 
 	@ManyToMany(mappedBy = "listFood")
 	private List<MyOrder> order;
-
-	// @Column(name = "totalPrice")
-	// private Double totalPrice;
 
 	public Food() {
 	}
@@ -55,8 +52,6 @@ public class Food implements FoodMenuUnit {
 		this.foodName = foodName;
 		this.price = price;
 		this.quantity = quantity;
-		// this.totalPrice = price * quantity;
-		// this.id=createRandomgID();
 	}
 
 	public Food(Long id, Date date, String foodName, Double price,

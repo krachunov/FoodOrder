@@ -37,10 +37,7 @@ public class MyOrder implements FoodMenuUnit {
 
 	// @OneToMany
 	@ManyToMany
-	@JoinTable(
-			name = "levins_order", 
-			joinColumns = { @JoinColumn(name = "order_id") }, 
-			inverseJoinColumns = { @JoinColumn(name = "food_id") })
+	@JoinTable(name = "levins_order", joinColumns = { @JoinColumn(name = "order_id") }, inverseJoinColumns = { @JoinColumn(name = "food_id"), })
 	private List<Food> listFood;
 
 	@Column(name = "totalPrice")
