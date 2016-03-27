@@ -178,7 +178,7 @@ public class OrderMenu extends JFrame {
 		gbc_panel.gridx = 4;
 		gbc_panel.gridy = 2;
 
-		// TODO
+		// TODO - set background transperent
 		JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane1 = new GridBagConstraints();
 		gbc_scrollPane1.gridwidth = 3;
