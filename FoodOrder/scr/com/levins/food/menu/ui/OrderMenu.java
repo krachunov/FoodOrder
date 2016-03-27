@@ -1,5 +1,6 @@
 package com.levins.food.menu.ui;
 
+import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 import javax.swing.JFrame;
 
@@ -33,12 +34,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.Random;
 
 import javax.swing.JTextField;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 @SuppressWarnings("rawtypes")
 public class OrderMenu extends JFrame {
@@ -70,7 +73,11 @@ public class OrderMenu extends JFrame {
 	}
 
 	@SuppressWarnings("unchecked")
-	public OrderMenu() {
+	public OrderMenu() throws IOException {
+		//TODO need to fix picture size
+		File file = new File("resources/bg.jpg");
+		BufferedImage myImage = ImageIO.read(new File("resources/bg.jpg"));
+		setContentPane(new ImagePanel(myImage));
 		manage = new FoodManage();
 		model = new SearchModelOrder();
 		orderList = new ArrayList<Food>();
@@ -78,7 +85,7 @@ public class OrderMenu extends JFrame {
 		tableModel = new TableModelOrder();
 
 		setTitle("Food Order");
-		setSize(900, 500);
+		setSize(956, 573);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 41, 0, 0, 0, 130, 130, 81 };
 		gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

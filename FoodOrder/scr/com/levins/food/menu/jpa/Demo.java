@@ -1,5 +1,6 @@
 package com.levins.food.menu.jpa;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -40,7 +41,7 @@ public class Demo {
 		return reportDate;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		OrderMenu menu = new OrderMenu();
 		menu.setVisible(true);
