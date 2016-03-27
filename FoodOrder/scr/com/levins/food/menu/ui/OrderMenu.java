@@ -316,6 +316,7 @@ public class OrderMenu extends JFrame {
 
 		textFieldPrice = new JTextArea();
 		textFieldPrice.setSize(10, 10);
+		textFieldPrice.setEditable(false);
 		GridBagConstraints gbc_textFieldPrice = new GridBagConstraints();
 		gbc_textFieldPrice.anchor = GridBagConstraints.WEST;
 		gbc_textFieldPrice.insets = new Insets(0, 0, 5, 5);
@@ -479,6 +480,7 @@ public class OrderMenu extends JFrame {
 		textAreaTotalCost = new JTextArea();
 		textAreaTotalCost.setTabSize(3);
 		textAreaTotalCost.setText("0.0 лв.");
+		textAreaTotalCost.setEditable(false);
 		GridBagConstraints gbc_textAreaTotalCost = new GridBagConstraints();
 		gbc_textAreaTotalCost.anchor = GridBagConstraints.WEST;
 		gbc_textAreaTotalCost.insets = new Insets(0, 0, 5, 0);
