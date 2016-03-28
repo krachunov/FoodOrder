@@ -35,22 +35,21 @@ public class MyOrder implements FoodMenuUnit {
 	@JoinColumn(name = "employeeID")
 	private Employee employee;
 
-	// @OneToMany
 	@ManyToMany
-	@JoinTable(name = "levins_order", joinColumns = { @JoinColumn(name = "order_id") }, inverseJoinColumns = { @JoinColumn(name = "food_id"), })
+	@JoinTable(name = "levins_order", joinColumns = { @JoinColumn(name = "order_id") }, inverseJoinColumns = { @JoinColumn(name = "food_id") })
 	private List<Food> listFood;
+
+	@ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY, targetEntity = Count.class)
+	@JoinTable(name = "PORTATION_MODEL_SET", 
+		joinColumns = {
+			@JoinColumn(table = "levins_order", name = "order_id")},
+		inverseJoinColumns = @JoinColumn(table = "levins_food_count", name = "count"))
+	private List<Count> foodCounter;
 
 	@Column(name = "totalPrice")
 	private Double totalAmount;
 
 	public MyOrder() {
-	}
-
-	private Long createRandomgID() {
-		long range = 1234567L;
-		Random r = new Random();
-		long number = (long) (r.nextDouble() * range);
-		return number;
 	}
 
 	public MyOrder(Employee currentEmployee, Date date, List<Food> listFood,
@@ -91,6 +90,14 @@ public class MyOrder implements FoodMenuUnit {
 
 	public void setListFood(List<Food> listFood) {
 		this.listFood = listFood;
+	}
+
+	public List<Count> getFoodCounter() {
+		return foodCounter;
+	}
+
+	public void setFoodCounter(List<Count> foodCounter) {
+		this.foodCounter = foodCounter;
 	}
 
 	public Double getTotalAmount() {

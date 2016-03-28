@@ -11,16 +11,19 @@ import java.awt.Panel;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.RootPaneContainer;
 
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
+import com.levins.food.menu.jpa.Count;
 import com.levins.food.menu.jpa.DataBaseConnection;
 import com.levins.food.menu.jpa.Employee;
 import com.levins.food.menu.jpa.Food;
@@ -43,6 +46,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.awt.Color;
+import java.awt.SystemColor;
 
 @SuppressWarnings("rawtypes")
 public class OrderMenu extends JFrame {
@@ -59,6 +63,7 @@ public class OrderMenu extends JFrame {
 	private double totalCost;
 	private List<String> foodNameList;
 	private List<Food> orderList;
+	private List<Count> countList;
 	List<String> orderListToString;
 
 	private JTable table;
@@ -74,13 +79,19 @@ public class OrderMenu extends JFrame {
 	}
 
 	@SuppressWarnings("unchecked")
-	public OrderMenu() throws IOException {
+	public OrderMenu() {
 		File file = new File("resources/bg.jpg");
-		BufferedImage myImage = ImageIO.read(new File("resources/bg.jpg"));
+		BufferedImage myImage = null;
+		try {
+			myImage = ImageIO.read(new File("resources/bg.jpg"));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		setContentPane(new ImagePanel(myImage));
 		manage = new FoodManage();
 		model = new SearchModelOrder();
 		orderList = new ArrayList<Food>();
+		countList = new ArrayList<Count>();
 		orderListToString = new ArrayList<>();
 		tableModel = new TableModelOrder();
 		setResizable(false);
@@ -369,6 +380,8 @@ public class OrderMenu extends JFrame {
 				textFieldQuantity.setText("1");
 
 				orderList.add(orderedFood);
+				countList.add(new Count(Integer.valueOf(textFieldQuantity
+						.getText())));
 				String stringToTableView = orderedFood.toString();
 				orderListToString.add(stringToTableView);
 				try {
@@ -411,6 +424,7 @@ public class OrderMenu extends JFrame {
 
 				MyOrder purch = new MyOrder(employee, dateValue, orderList,
 						totalCost);
+				purch.setFoodCounter(countList);
 				employee.getPurchase().add(purch);
 
 				manage.addUnit(employee);
@@ -419,6 +433,9 @@ public class OrderMenu extends JFrame {
 				System.out.println(purch.toString());
 				purch = null;
 				employee = null;
+				for (Count string : countList) {
+					System.out.println(string.getCount());
+				}
 				clearAllField();
 
 			}
@@ -453,6 +470,7 @@ public class OrderMenu extends JFrame {
 						.getModel());
 				orderListToString = new ArrayList<>();
 				orderList = new ArrayList<Food>();
+				countList = new ArrayList<Count>();
 				totalCost = 0;
 				try {
 					tableModel.setListToTable(SearchModelOrder
@@ -470,7 +488,7 @@ public class OrderMenu extends JFrame {
 		getContentPane().add(btnBuy, gbc_btnBuy);
 
 		JLabel lblTotalCost = new JLabel("Total cost");
-		lblTotalCost.setBackground(Color.GRAY);
+		lblTotalCost.setBackground(SystemColor.inactiveCaption);
 		GridBagConstraints gbc_lblTotalCost = new GridBagConstraints();
 		gbc_lblTotalCost.anchor = GridBagConstraints.EAST;
 		gbc_lblTotalCost.insets = new Insets(0, 0, 5, 5);
@@ -479,6 +497,7 @@ public class OrderMenu extends JFrame {
 		getContentPane().add(lblTotalCost, gbc_lblTotalCost);
 
 		textAreaTotalCost = new JTextArea();
+		textAreaTotalCost.setBackground(SystemColor.inactiveCaption);
 		textAreaTotalCost.setTabSize(3);
 		textAreaTotalCost.setText("0.0 лв.");
 		textAreaTotalCost.setEditable(false);

@@ -9,12 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.SecondaryTable;
 
-@Entity(name = "levins_food")
-//@SecondaryTable(name = "levins_order", pkJoinColumns={ @PrimaryKeyJoinColumn(name="FoodID", referencedColumnName="id")})
-public class Food implements FoodMenuUnit {
+//@Entity(name = "levins_ordered_food")
+public class OrderedFood implements FoodMenuUnit {
 	public static final int INDEX_ID = 0;
 	public static final int INDEX_DATE = 1;
 	public static final int INDEX_FOOD_NAME = 2;
@@ -36,23 +33,22 @@ public class Food implements FoodMenuUnit {
 	private Double price;
 
 	@Column(name = "count")
-//	@Column(table="levins_order", name="count")
 	private Integer quantity;
 
 	@ManyToMany(mappedBy = "listFood")
 	private List<MyOrder> order;
 
-	public Food() {
+	public OrderedFood() {
 	}
 
-	public Food(Date date, String foodName, Double price, Integer quantity) {
+	public OrderedFood(Date date, String foodName, Double price, Integer quantity) {
 		this.date = date;
 		this.foodName = foodName;
 		this.price = price;
 		this.quantity = quantity;
 	}
 
-	public Food(Long id, Date date, String foodName, Double price,
+	public OrderedFood(Long id, Date date, String foodName, Double price,
 			Integer quantity) {
 		this.id = id;
 		this.date = date;
@@ -61,7 +57,7 @@ public class Food implements FoodMenuUnit {
 		this.quantity = quantity;
 	}
 
-	public Food(Date date, String foodName, Double price) {
+	public OrderedFood(Date date, String foodName, Double price) {
 		super();
 		this.date = date;
 		this.foodName = foodName;
