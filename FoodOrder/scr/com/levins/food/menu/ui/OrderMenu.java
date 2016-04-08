@@ -11,19 +11,17 @@ import java.awt.Panel;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.RootPaneContainer;
 
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
-import com.levins.food.menu.jpa.Count;
+import com.levins.food.menu.jpa.CurrentOrder;
 import com.levins.food.menu.jpa.DataBaseConnection;
 import com.levins.food.menu.jpa.Employee;
 import com.levins.food.menu.jpa.Food;
@@ -35,8 +33,10 @@ import com.levins.food.menu.ui.table.order.TableModelOrder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import javax.swing.JTextField;
 
@@ -62,8 +62,7 @@ public class OrderMenu extends JFrame {
 	private JTextArea textAreaTotalCost;
 	private double totalCost;
 	private List<String> foodNameList;
-	private List<Food> orderList;
-	private List<Count> countList;
+	private List<CurrentOrder> orderList;
 	List<String> orderListToString;
 
 	private JTable table;
@@ -90,8 +89,7 @@ public class OrderMenu extends JFrame {
 		setContentPane(new ImagePanel(myImage));
 		manage = new FoodManage();
 		model = new SearchModelOrder();
-		orderList = new ArrayList<Food>();
-		countList = new ArrayList<Count>();
+		orderList = new ArrayList<>();
 		orderListToString = new ArrayList<>();
 		tableModel = new TableModelOrder();
 		setResizable(false);
@@ -368,20 +366,19 @@ public class OrderMenu extends JFrame {
 				FoodManage manage = new FoodManage();
 
 				Food orderedFood = createOrderedFood(manage);
-				orderedFood.setQuantity(Integer.valueOf(textFieldQuantity
-						.getText()));
+				Integer quantityValue = Integer.valueOf(textFieldQuantity
+						.getText());
+				CurrentOrder currentOrder = new CurrentOrder(orderedFood,
+						quantityValue);
+				orderList.add(currentOrder);
 
 				System.out.println(orderedFood.toString());
+
 				model.setListOfFood(orderList);
-				totalCost += (orderedFood.getPrice() * orderedFood
-						.getQuantity());
-				textAreaTotalCost.setText("");
+				totalCost += (orderedFood.getPrice() * currentOrder.getCount());
 				textAreaTotalCost.append(String.valueOf(totalCost + " лв."));
 				textFieldQuantity.setText("1");
 
-				orderList.add(orderedFood);
-				countList.add(new Count(Integer.valueOf(textFieldQuantity
-						.getText())));
 				String stringToTableView = orderedFood.toString();
 				orderListToString.add(stringToTableView);
 				try {
@@ -424,7 +421,6 @@ public class OrderMenu extends JFrame {
 
 				MyOrder purch = new MyOrder(employee, dateValue, orderList,
 						totalCost);
-				purch.setFoodCounter(countList);
 				employee.getPurchase().add(purch);
 
 				manage.addUnit(employee);
@@ -433,9 +429,6 @@ public class OrderMenu extends JFrame {
 				System.out.println(purch.toString());
 				purch = null;
 				employee = null;
-				for (Count string : countList) {
-					System.out.println(string.getCount());
-				}
 				clearAllField();
 
 			}
@@ -469,8 +462,7 @@ public class OrderMenu extends JFrame {
 				comboBoxFood.setModel(new JComboBox<>(new Object[] {})
 						.getModel());
 				orderListToString = new ArrayList<>();
-				orderList = new ArrayList<Food>();
-				countList = new ArrayList<Count>();
+				orderList = new ArrayList<CurrentOrder>();
 				totalCost = 0;
 				try {
 					tableModel.setListToTable(SearchModelOrder

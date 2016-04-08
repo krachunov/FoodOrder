@@ -49,8 +49,6 @@ public class TableModelOrder extends AbstractTableModel {
 			return singleResult.getValue();
 		case 2:
 			return singleResult.getPrice()+" лв.";
-		case 3:
-			return singleResult.getQuantity();
 		}
 		return null;
 	}

@@ -2,9 +2,7 @@ package com.levins.food.menu.jpa;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,16 +11,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
 
-import org.hibernate.annotations.CollectionId;
-import org.hibernate.annotations.Type;
-
-@Entity(name = "levins_food_order")
+@Entity(name = "levins_order")
 public class MyOrder implements FoodMenuUnit {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
@@ -35,16 +29,9 @@ public class MyOrder implements FoodMenuUnit {
 	@JoinColumn(name = "employeeID")
 	private Employee employee;
 
-	@ManyToMany
-	@JoinTable(name = "levins_order", joinColumns = { @JoinColumn(name = "order_id") }, inverseJoinColumns = { @JoinColumn(name = "food_id") })
-	private List<Food> listFood;
-
-	@ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY, targetEntity = Count.class)
-	@JoinTable(name = "PORTATION_MODEL_SET", 
-		joinColumns = {
-			@JoinColumn(table = "levins_order", name = "order_id")},
-		inverseJoinColumns = @JoinColumn(table = "levins_food_count", name = "count"))
-	private List<Count> foodCounter;
+	@OneToMany
+	@JoinTable(name = "levins_order", joinColumns = { @JoinColumn(name = "id", referencedColumnName = "id") }, inverseJoinColumns = { @JoinColumn(name = "current_id", referencedColumnName = "current_id", unique = true) })
+	private List<CurrentOrder> listOrder;
 
 	@Column(name = "totalPrice")
 	private Double totalAmount;
@@ -52,11 +39,11 @@ public class MyOrder implements FoodMenuUnit {
 	public MyOrder() {
 	}
 
-	public MyOrder(Employee currentEmployee, Date date, List<Food> listFood,
-			Double totalAmount) {
+	public MyOrder(Employee currentEmployee, Date date,
+			List<CurrentOrder> listCurrentOrder, Double totalAmount) {
 		this.employee = currentEmployee;
 		this.date = date;
-		this.listFood = listFood;
+		this.listOrder = listCurrentOrder;
 		this.totalAmount = totalAmount;
 	}
 
@@ -84,20 +71,12 @@ public class MyOrder implements FoodMenuUnit {
 		this.employee = employee;
 	}
 
-	public List<Food> getListFood() {
-		return listFood;
+	public List<CurrentOrder> getListOrder() {
+		return listOrder;
 	}
 
-	public void setListFood(List<Food> listFood) {
-		this.listFood = listFood;
-	}
-
-	public List<Count> getFoodCounter() {
-		return foodCounter;
-	}
-
-	public void setFoodCounter(List<Count> foodCounter) {
-		this.foodCounter = foodCounter;
+	public void setListOrder(List<CurrentOrder> listOrder) {
+		this.listOrder = listOrder;
 	}
 
 	public Double getTotalAmount() {
